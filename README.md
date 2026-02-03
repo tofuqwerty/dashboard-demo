@@ -18,32 +18,32 @@
 
 1. Clone repository
 
-git clone https://github.com/tofuqwerty/dashboard-demo.git
-cd dashboard-demo
+- git clone https://github.com/tofuqwerty/dashboard-demo.git
+- cd dashboard-demo
 
 2. Install dependencies
 
-npm install
+- npm install
 
 3. Env Local
 
-copy .env.example to .env.local
+- copy .env.example to .env.local
 
 ** edit .env.local with your MySQL
 
 4. Setup Database
 
-node scripts/seed.js
+- node scripts/seed.js
 
 5. Run Development
 
-npm run dev
-open http://localhost:3000
+- npm run dev
+- open http://localhost:3000
 
 6. Login 
 
-Email: demo@example.com
-Password: demo123
+- Email: demo@example.com
+- Password: demo123
 
 # Tech Stack
 
