@@ -249,7 +249,7 @@ export default function LoginClient() {
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
-          Dibuat dengan ❤️ menggunakan Next.js
+          Dibuat menggunakan Next.js
         </p>
       </div>
     </div>
