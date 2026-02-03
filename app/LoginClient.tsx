@@ -13,6 +13,7 @@ export default function LoginClient() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -44,13 +45,19 @@ export default function LoginClient() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        router.push('/dashboard');
+        // Tampilkan animasi success
+        setLoginSuccess(true);
+        
+        // Tunggu animasi selesai baru redirect
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1500);
       } else {
         setError(data.message || 'Login gagal');
+        setLoading(false);
       }
     } catch (err) {
       setError('Terjadi kesalahan. Silakan coba lagi.');
-    } finally {
       setLoading(false);
     }
   };
@@ -59,6 +66,81 @@ export default function LoginClient() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <DarkModeToggle />
       
+      {/* Loading Overlay - Muncul saat login */}
+      {loading && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center animate-fadeIn">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl max-w-sm w-full mx-4 animate-scaleIn">
+            {loginSuccess ? (
+              // Animasi Success
+              <div className="text-center">
+                <div className="mx-auto w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4 animate-checkmark">
+                  <svg
+                    className="w-8 h-8 text-white animate-checkmark-icon"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Login Berhasil!
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Mengalihkan ke dashboard...
+                </p>
+              </div>
+            ) : (
+              // Animasi Loading
+              <div className="text-center">
+                <div className="relative mx-auto w-16 h-16 mb-4">
+                  {/* Outer spinning ring */}
+                  <div className="absolute inset-0 border-4 border-blue-200 dark:border-blue-900 rounded-full"></div>
+                  <div className="absolute inset-0 border-4 border-transparent border-t-blue-600 rounded-full animate-spin"></div>
+                  
+                  {/* Inner pulsing circle */}
+                  <div className="absolute inset-2 bg-blue-600 rounded-full animate-pulse"></div>
+                  
+                  {/* Lock icon */}
+                  <svg
+                    className="absolute inset-0 m-auto w-6 h-6 text-white animate-bounce-slow"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
+                
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Memverifikasi...
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Mohon tunggu sebentar
+                </p>
+                
+                {/* Loading dots */}
+                <div className="flex justify-center space-x-2 mt-4">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce-dot"></div>
+                  <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce-dot animation-delay-200"></div>
+                  <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce-dot animation-delay-400"></div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="w-full max-w-md animate-fadeIn">
         <div className="card">
           {/* Header */}
@@ -204,33 +286,7 @@ export default function LoginClient() {
               disabled={loading}
               className="btn-primary w-full flex items-center justify-center space-x-2"
             >
-              {loading ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Memproses...</span>
-                </>
-              ) : (
-                <span>Login</span>
-              )}
+              <span>Login</span>
             </button>
           </form>
 
