@@ -9,6 +9,7 @@ export interface TokenPayload {
   userId: number;
   email: string;
   username: string;
+  [key: string]: any; 
 }
 
 export async function createToken(payload: TokenPayload): Promise<string> {
