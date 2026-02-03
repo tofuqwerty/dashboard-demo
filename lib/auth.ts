@@ -1,19 +1,22 @@
-import { SignJWT, jwtVerify } from 'jose';
+import { SignJWT, jwtVerify, JWTPayload } from 'jose';
 import { cookies } from 'next/headers';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key'
 );
 
-export interface TokenPayload {
+export interface TokenPayload extends JWTPayload {
   userId: number;
   email: string;
   username: string;
-  [key: string]: any; 
 }
 
 export async function createToken(payload: TokenPayload): Promise<string> {
-  const token = await new SignJWT(payload)
+  const token = await new SignJWT({
+    userId: payload.userId,
+    email: payload.email,
+    username: payload.username
+  })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('24h')
@@ -25,7 +28,7 @@ export async function createToken(payload: TokenPayload): Promise<string> {
 export async function verifyToken(token: string): Promise<TokenPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as unknown as TokenPayload;
+    return payload as TokenPayload;
   } catch (error) {
     return null;
   }
